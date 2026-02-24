@@ -4,6 +4,8 @@
   <p>MIS-Grade Learning Management System — Admin Panel & Employee Portal</p>
 </div>
 
+> **IT/MIS Team deploying this on a server?** See the step-by-step **[Server Deployment Guide →](DEPLOYMENT.md)**
+
 ---
 
 ## Table of Contents
