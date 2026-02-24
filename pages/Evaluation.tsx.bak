@@ -1,0 +1,309 @@
+import React, { useState } from 'react';
+import { Check, X, FileText, Download, Clock, Sparkles, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
+import { Evaluation, DBStructure } from '../types';
+import { evaluateStudentSubmission } from '../services/geminiService';
+import { useData } from '../context/DataContext';
+
+const EvaluationPage = () => {
+  const { data, updateData } = useData();
+  const mockEvaluations = data.evaluations;
+  const detailedSubmissions = data.detailedSubmissions;
+
+  const [selectedEvaluation, setSelectedEvaluation] = useState<Evaluation | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [finalScore, setFinalScore] = useState<number | ''>('');
+  const [feedback, setFeedback] = useState('');
+
+  const handleOpenGrade = (evaluation: Evaluation) => {
+    setSelectedEvaluation(evaluation);
+    setAiAnalysis(null);
+    setFinalScore('');
+    setFeedback('');
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEvaluation(null);
+  };
+
+  const runAiEvaluation = async () => {
+    if (!selectedEvaluation) return;
+    const details = detailedSubmissions[selectedEvaluation.id];
+    if (!details) return;
+
+    setIsAnalyzing(true);
+    const result = await evaluateStudentSubmission(
+      selectedEvaluation.moduleTitle,
+      details.mcq,
+      details.narrative
+    );
+    
+    if (result) {
+      setAiAnalysis(result);
+      setFinalScore(result.overallScore);
+      setFeedback(result.summary);
+    }
+    setIsAnalyzing(false);
+  };
+
+  const handleSubmitGrade = (status: 'Pass' | 'Fail') => {
+    if (!selectedEvaluation) return;
+
+    const updatedEvaluations = mockEvaluations.map(ev => 
+      ev.id === selectedEvaluation.id 
+        ? { ...ev, status: 'Graded' as const, score: typeof finalScore === 'number' ? finalScore : 0 } 
+        : ev
+    );
+
+    updateData('evaluations', updatedEvaluations);
+    handleCloseModal();
+  };
+
+  const getDetails = (id: string) => detailedSubmissions[id] || { mcq: { correct: 0, total: 0 }, narrative: [] };
+
+  return (
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-4 bg-white p-6 rounded-xl border border-slate-200 shadow-sm shrink-0">
+        <div className="text-left">
+          <h2 className="text-2xl font-semibold text-slate-900 leading-none">Assessments</h2>
+        </div>
+
+        <div className="text-center">
+          <p className="text-slate-500 font-medium text-sm">Review employee submissions and provide feedback.</p>
+        </div>
+
+        <div className="flex justify-end">
+          <div className="bg-slate-50 px-4 py-2 rounded-xl border border-slate-200 flex items-center gap-2">
+            <Clock size={16} className="text-orange-500" />
+            <span className="text-sm font-semibold text-slate-900">12 Pending</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-slate-100 flex gap-8 text-sm font-semibold text-slate-400">
+            <button className="text-slate-900 border-b-2 border-slate-900 pb-4 -mb-6 px-1">Pending Review</button>
+            <button className="hover:text-slate-900 pb-4 -mb-6 px-1 transition-colors">Graded History</button>
+        </div>
+        <table className="w-full text-left">
+            <thead>
+                <tr className="bg-slate-50 text-slate-500 text-xs font-semibold uppercase tracking-wider border-b border-slate-100">
+                    <th className="px-6 py-4">Employee</th>
+                    <th className="px-6 py-4">Assignment Details</th>
+                    <th className="px-6 py-4">Submitted</th>
+                    <th className="px-6 py-4">Status</th>
+                    <th className="px-6 py-4 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+                {mockEvaluations.map((item) => (
+                    <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-6 py-5 font-semibold text-slate-900 text-base">{item.studentName}</td>
+                        <td className="px-6 py-5">
+                            <div className="flex flex-col">
+                                <span className="text-slate-900 font-semibold text-sm">{item.assignmentTitle}</span>
+                                <span className="text-xs text-slate-500 font-medium mt-0.5">{item.moduleTitle}</span>
+                            </div>
+                        </td>
+                        <td className="px-6 py-5 text-slate-500 text-sm font-medium">{item.submissionDate}</td>
+                        <td className="px-6 py-5">
+                            <span className={`px-3 py-1.5 rounded-full text-xs font-semibold flex w-fit items-center gap-1.5 ${item.status === 'Pending' ? 'bg-orange-50 text-orange-600 border border-orange-100' : 'bg-green-50 text-green-600 border border-green-100'}`}>
+                                <span className={`w-1.5 h-1.5 rounded-full ${item.status === 'Pending' ? 'bg-orange-500' : 'bg-green-500'}`}></span>
+                                {item.status === 'Graded' ? `Score: ${item.score}/100` : 'Needs Grading'}
+                            </span>
+                        </td>
+                        <td className="px-6 py-5 text-right">
+                           <div className="flex justify-end gap-3">
+                                {item.status === 'Pending' && (
+                                    <button 
+                                      onClick={() => handleOpenGrade(item)}
+                                      className="flex items-center gap-1.5 text-white bg-slate-900 hover:bg-slate-800 px-4 py-2 rounded-md text-sm font-semibold transition-colors shadow-sm"
+                                    >
+                                        <Check size={16} /> Grade
+                                    </button>
+                                )}
+                                {item.status === 'Graded' && (
+                                    <button className="flex items-center gap-1.5 text-slate-700 bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-md text-sm font-semibold transition-colors">
+                                        <FileText size={16} /> View
+                                    </button>
+                                )}
+                           </div>
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+      </div>
+
+      {/* Grading Modal */}
+      {isModalOpen && selectedEvaluation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
+           <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+              
+              {/* Modal Header */}
+              <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                  <div>
+                    <h3 className="text-xl font-semibold text-slate-900">{selectedEvaluation.assignmentTitle}</h3>
+                    <p className="text-sm text-slate-500 font-medium">
+                      Submission by <span className="text-slate-900">{selectedEvaluation.studentName}</span> • {selectedEvaluation.moduleTitle}
+                    </p>
+                  </div>
+                  <button onClick={handleCloseModal} className="text-slate-400 hover:text-slate-900 transition-colors p-2 bg-white rounded-full border border-slate-200 hover:bg-slate-100">
+                    <X size={20} />
+                  </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 bg-white custom-scrollbar">
+                 {/* 1. MCQ Section */}
+                 <div>
+                    <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
+                       <Check className="text-green-600" size={16} />
+                       Multiple Choice Results
+                    </h4>
+                    <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 flex items-center gap-4">
+                        <div className="w-16 h-16 rounded-full bg-slate-900 text-white flex items-center justify-center text-xl font-semibold">
+                            {getDetails(selectedEvaluation.id).mcq.correct}/{getDetails(selectedEvaluation.id).mcq.total}
+                        </div>
+                        <div>
+                           <p className="font-semibold text-slate-900 text-lg">
+                             {Math.round((getDetails(selectedEvaluation.id).mcq.correct / getDetails(selectedEvaluation.id).mcq.total) * 100)}% Correct
+                           </p>
+                           <p className="text-sm text-slate-500 font-medium">Auto-graded system result</p>
+                        </div>
+                    </div>
+                 </div>
+
+                 {/* 2. Narrative Section */}
+                 <div>
+                    <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-2">
+                       <FileText className="text-blue-600" size={16} />
+                       Narrative Answers
+                    </h4>
+                    <div className="space-y-4">
+                        {getDetails(selectedEvaluation.id).narrative.map((item: any, idx: number) => (
+                           <div key={idx} className="bg-slate-50 rounded-xl p-5 border border-slate-200">
+                              <p className="text-sm font-semibold text-slate-700 mb-2">Q{idx + 1}: {item.question}</p>
+                              <p className="text-sm text-slate-900 leading-relaxed font-medium bg-white p-3 rounded border border-slate-100">
+                                {item.answer}
+                              </p>
+                           </div>
+                        ))}
+                    </div>
+                 </div>
+
+                 {/* 3. AI Analysis Section */}
+                 <div>
+                    <div className="flex justify-between items-center mb-4">
+                       <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-2">
+                          <Sparkles className="text-purple-600" size={16} />
+                          AI Assessment
+                       </h4>
+                       {!aiAnalysis && (
+                          <button 
+                            onClick={runAiEvaluation}
+                            disabled={isAnalyzing}
+                            className="text-xs bg-purple-50 text-purple-700 px-3 py-1.5 rounded-full font-semibold hover:bg-purple-100 transition-colors flex items-center gap-1 border border-purple-100 disabled:opacity-50"
+                          >
+                             {isAnalyzing ? 'Analyzing...' : 'Generate Analysis'}
+                             {!isAnalyzing && <Sparkles size={12} />}
+                          </button>
+                       )}
+                    </div>
+
+                    {isAnalyzing && (
+                      <div className="bg-purple-50/50 rounded-xl p-8 border border-purple-100 flex flex-col items-center justify-center text-center">
+                         <div className="w-8 h-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+                         <p className="text-purple-900 font-semibold text-sm">Evaluating narrative quality...</p>
+                      </div>
+                    )}
+
+                    {aiAnalysis && (
+                       <div className="bg-purple-50 rounded-xl p-6 border border-purple-100 animate-in fade-in slide-in-from-top-4 duration-300">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-4">
+                             <div>
+                                <h5 className="text-xs font-semibold text-purple-800 uppercase mb-2">Summary</h5>
+                                <p className="text-sm text-purple-900 leading-relaxed font-medium">
+                                   {aiAnalysis.summary}
+                                </p>
+                             </div>
+                             <div>
+                                <h5 className="text-xs font-semibold text-purple-800 uppercase mb-2">Detailed Feedback</h5>
+                                <p className="text-sm text-purple-900 leading-relaxed font-medium">
+                                   {aiAnalysis.narrativeFeedback}
+                                </p>
+                             </div>
+                          </div>
+                          
+                          <div className="flex gap-4 border-t border-purple-100 pt-4 mt-2">
+                             <div>
+                                <span className="text-xs font-semibold text-purple-600 block">Narrative Score</span>
+                                <span className="text-xl font-semibold text-purple-900">{aiAnalysis.narrativeScore}/100</span>
+                             </div>
+                             <div>
+                                <span className="text-xs font-semibold text-purple-600 block">Recommended Grade</span>
+                                <span className="text-xl font-semibold text-purple-900">{aiAnalysis.overallScore}/100</span>
+                             </div>
+                          </div>
+                       </div>
+                    )}
+                 </div>
+              </div>
+
+              {/* Modal Footer (Grading Form) */}
+              <div className="p-6 bg-slate-50 border-t border-slate-200 z-10">
+                 <div className="flex flex-col md:flex-row gap-5 items-end">
+                    <div className="flex-1 w-full">
+                       <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Instructor Feedback</label>
+                       <textarea 
+                          value={feedback}
+                          onChange={(e) => setFeedback(e.target.value)}
+                          placeholder="Add your final comments..." 
+                          className="w-full h-20 bg-white border border-slate-300 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-slate-900/5 outline-none resize-none"
+                       />
+                    </div>
+                    <div className="w-full md:w-32">
+                       <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Final Score</label>
+                       <div className="relative">
+                          <input 
+                            type="number" 
+                            max="100"
+                            min="0"
+                            value={finalScore}
+                            onChange={(e) => setFinalScore(Number(e.target.value))}
+                            className="w-full bg-white border border-slate-300 rounded-xl py-2.5 px-3 text-lg font-semibold text-slate-900 focus:ring-2 focus:ring-slate-900/5 outline-none text-center" 
+                          />
+                          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm">/100</span>
+                       </div>
+                    </div>
+                 </div>
+
+                 <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200">
+                    <button onClick={handleCloseModal} className="px-5 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-colors">
+                       Cancel
+                    </button>
+                    <button 
+                       onClick={() => handleSubmitGrade('Fail')}
+                       className="px-5 py-2.5 rounded-xl border border-red-200 bg-red-50 text-red-600 font-semibold text-sm hover:bg-red-100 transition-colors"
+                    >
+                       Reject / Fail
+                    </button>
+                     <button 
+                       onClick={() => handleSubmitGrade('Pass')}
+                       className="px-6 py-2.5 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition-colors shadow-sm"
+                    >
+                       Approve & Pass
+                    </button>
+                 </div>
+              </div>
+           </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default EvaluationPage;

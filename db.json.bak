@@ -1,0 +1,1374 @@
+{
+  "systemBranding": {
+    "name": "Brigada Learning System",
+    "logo": "Brigada",
+    "tagline": "Learning System"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "title": "Overview",
+        "items": [
+          { "name": "Dashboard", "path": "/admin", "icon": "LayoutDashboard" }
+        ]
+      },
+      {
+        "title": "Learning Content",
+        "items": [
+          { "name": "Learning Paths", "path": "/admin/learning-paths", "icon": "Waypoints" },
+          { "name": "Create Module", "path": "/admin/create-module", "icon": "PlusCircle" },
+          { "name": "Manage Modules", "path": "/admin/modules", "icon": "Library" },
+          { "name": "Certificates", "path": "/admin/certificates", "icon": "Award" }
+        ]
+      },
+      {
+        "title": "Workforce",
+        "items": [
+          { "name": "Employees", "path": "/admin/employees", "icon": "Users" },
+          { "name": "Manage Role", "path": "/admin/manage-role", "icon": "ShieldCheck" },
+          { "name": "Access Restrictions", "path": "/admin/restricted", "icon": "Lock" }
+        ]
+      },
+      {
+        "title": "Engagement",
+        "items": [
+          { "name": "Messages", "path": "/admin/messages", "icon": "MessageSquare" },
+          { "name": "Announcements", "path": "/admin/announcements", "icon": "Megaphone" },
+          { "name": "Calendar", "path": "/admin/calendar", "icon": "Calendar" }
+        ]
+      }
+    ],
+    "reports": [
+      { "name": "Progress Report", "path": "/admin/reports/progress", "icon": "TrendingUp" },
+      { "name": "Retake Report", "path": "/admin/reports/retake", "icon": "RotateCcw" },
+      { "name": "Completion Report", "path": "/admin/reports/completion", "icon": "CheckCircle" }
+    ]
+  },
+  "currentUser": {
+    "id": "admin-1",
+    "first_name": "Alex",
+    "last_name": "Morgan",
+    "name": "Alex Morgan",
+    "email": "alex.morgan@company.com",
+    "role": "Admin",
+    "admin_role": "Super Admin",
+    "department": "Administration",
+    "business_unit": "Corporate Services",
+    "position": "Principal Administrator",
+    "image_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+  },
+  "modules": [
+    {
+      "id": "1",
+      "title": "Advanced React Patterns",
+      "description": "Deep dive into hooks and professional architecture patterns.",
+      "instructor": "Sarah Drasner",
+      "studentsEnrolled": 1240,
+      "status": "Published",
+      "duration": "12 hours",
+      "lastUpdated": "2 hours ago",
+      "thumbnail": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+      "sections": [
+        {
+          "id": "sec-1",
+          "title": "Section 1: The Basics of Patterns",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-1",
+              "title": "Why Design Patterns Matter",
+              "type": "reading",
+              "category": "learning",
+              "content": "Design patterns are reusable solutions to common problems...",
+              "fileUrl": "patterns-handbook.pdf"
+            },
+            {
+              "id": "comp-2",
+              "title": "History of Patterns",
+              "type": "video",
+              "category": "learning",
+              "content": "https://vimeo.com/patterns",
+              "externalUrl": "https://vimeo.com/patterns"
+            }
+          ]
+        },
+        {
+          "id": "sec-2",
+          "title": "Section 2: Component Architecture",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-3",
+              "title": "HOCs vs Render Props",
+              "type": "narrative",
+              "category": "learning",
+              "content": "In this chapter, we compare the two classic patterns...",
+              "minWords": 100,
+              "fileUrl": "submission-template.docx"
+            },
+            {
+              "id": "comp-4",
+              "title": "Patterns Quiz",
+              "type": "quiz",
+              "category": "assessment",
+              "content": [
+                {
+                  "id": "q1",
+                  "text": "What is a HOC?",
+                  "options": [
+                    {
+                      "id": "o1",
+                      "text": "A function that takes a component",
+                      "isCorrect": true
+                    },
+                    {
+                      "id": "o2",
+                      "text": "A hook",
+                      "isCorrect": false
+                    },
+                    {
+                      "id": "o3",
+                      "text": "A specialized React Pattern for state management",
+                      "isCorrect": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sec-3",
+          "title": "Section 3: State Management Patterns",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-11",
+              "title": "React Context API vs Redux",
+              "type": "video",
+              "category": "learning",
+              "content": "https://vimeo.com/react-state"
+            },
+            {
+              "id": "comp-12",
+              "title": "Introduction to Zustand",
+              "type": "reading",
+              "category": "learning",
+              "content": "Zustand is a small, fast and scalable bearbones state-management solution..."
+            },
+            {
+              "id": "comp-13",
+              "title": "State Architecture Quiz",
+              "type": "quiz",
+              "category": "assessment",
+              "content": [
+                {
+                  "id": "q-state-1",
+                  "text": "When should you use Context API over a state management library?",
+                  "options": [
+                    { "id": "o1", "text": "For low-frequency updates like themes or user locale", "isCorrect": true },
+                    { "id": "o2", "text": "For complex, high-frequency data updates", "isCorrect": false },
+                    { "id": "o3", "text": "Never, always use Redux", "isCorrect": false }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "settings": {
+        "availability": "always",
+        "assignmentType": "department",
+        "selectedAudience": [
+          "Engineering"
+        ],
+        "prerequisites": []
+      }
+    },
+    {
+      "id": "2",
+      "title": "UI/UX Principles for Devs",
+      "description": "Learn the core principles of design to build better products.",
+      "instructor": "Gary Simon",
+      "studentsEnrolled": 850,
+      "status": "Published",
+      "duration": "8 hours",
+      "lastUpdated": "Just now",
+      "thumbnail": "https://images.unsplash.com/photo-1561070791-2526d30994b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+      "sections": [
+        {
+          "id": "sec-1",
+          "title": "Foundations of Design",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-5",
+              "title": "Color Theory",
+              "type": "reading",
+              "category": "learning",
+              "content": "Colors evoke emotions..."
+            },
+            {
+              "id": "comp-6",
+              "title": "Typography 101",
+              "type": "video",
+              "category": "learning",
+              "content": "https://youtube.com/typography"
+            }
+          ]
+        },
+        {
+          "id": "sec-2",
+          "title": "Layout & Grids",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-7",
+              "title": "The 8pt Grid System",
+              "type": "narrative",
+              "category": "learning",
+              "content": "Scaling should be consistent..."
+            }
+          ]
+        },
+        {
+          "id": "sec-3",
+          "title": "Section 3: User Research & Prototyping",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-14",
+              "title": "Conducting User Interviews",
+              "type": "video",
+              "category": "learning",
+              "content": "https://youtube.com/user-research"
+            },
+            {
+              "id": "comp-15",
+              "title": "High Fidelity Prototyping in Figma",
+              "type": "reading",
+              "category": "learning",
+              "content": "Creating prototypes that feel like the real product..."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Node.js Microservices",
+      "description": "Scaling backends with distributed architectures.",
+      "instructor": "Ryan Dahl",
+      "studentsEnrolled": 2100,
+      "status": "Published",
+      "duration": "15 hours",
+      "lastUpdated": "3 days ago",
+      "thumbnail": "https://images.unsplash.com/photo-1627398242454-45a1465c2479?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80",
+      "sections": [
+        {
+          "id": "sec-1",
+          "title": "Service Architecture",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-8",
+              "title": "Monolith to Micro",
+              "type": "reading",
+              "category": "learning",
+              "content": "Breaking down the giant..."
+            }
+          ]
+        },
+        {
+          "id": "sec-2",
+          "title": "Messaging Queues",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-9",
+              "title": "RabbitMQ Basics",
+              "type": "video",
+              "category": "learning",
+              "content": "https://youtube.com/rabbitmq"
+            },
+            {
+              "id": "comp-10",
+              "title": "Event Driven Systems",
+              "type": "quiz",
+              "category": "assessment",
+              "content": [
+                {
+                  "id": "q-ed-1",
+                  "text": "What is the primary role of an event broker?",
+                  "options": [
+                    { "id": "o1", "text": "To store all system logs permanently", "isCorrect": false },
+                    { "id": "o2", "text": "To route messages between producers and consumers", "isCorrect": true },
+                    { "id": "o3", "text": "To execute business logic on incoming data", "isCorrect": false }
+                  ]
+                },
+                {
+                  "id": "q-ed-2",
+                  "text": "Which of these is a benefit of Loose Coupling in microservices?",
+                  "options": [
+                    { "id": "o1", "text": "Services can be deployed independently", "isCorrect": true },
+                    { "id": "o2", "text": "Synchronous communication is faster", "isCorrect": false },
+                    { "id": "o3", "text": "Easier to maintain a single database", "isCorrect": false }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sec-3",
+          "title": "Section 3: Docker and Containerization",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-16",
+              "title": "Writing your first Dockerfile",
+              "type": "video",
+              "category": "learning",
+              "content": "https://youtube.com/docker-basics"
+            },
+            {
+              "id": "comp-17",
+              "title": "Intro to Kubernetes Orchestration",
+              "type": "reading",
+              "category": "learning",
+              "content": "How to manage containers at scale..."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "title": "PostgreSQL Mastery 102",
+      "description": "Advanced database design and optimization.",
+      "instructor": "The Primeagen",
+      "studentsEnrolled": 1560,
+      "status": "Archived",
+      "duration": "10 hours",
+      "lastUpdated": "1 week ago",
+      "thumbnail": "https://plus.unsplash.com/premium_photo-1661877737564-3dfd7282efcb?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "sections": [
+        {
+          "id": "sec-1",
+          "title": "Indexing Strategies",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-11",
+              "title": "B-Tree vs Hash",
+              "type": "reading",
+              "category": "learning",
+              "content": "Performance at scale..."
+            }
+          ]
+        },
+        {
+          "id": "sec-2",
+          "title": "Query Optimization",
+          "isExpanded": true,
+          "components": [
+            {
+              "id": "comp-12",
+              "title": "Explain Analyze",
+              "type": "video",
+              "category": "learning",
+              "content": "https://youtube.com/explain"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "commonData": {
+    "departments": ["Engineering", "Marketing", "Sales", "Operations", "HR", "Legal", "Finance", "Product"],
+    "positions": ["VP Engineering", "Senior Developer", "Content Strategist", "Account Manager", "Product Manager", "Chief Legal Officer", "Junior Researcher", "Founder & Advisor", "HR Business Partner", "Fleet Operations Lead"],
+    "ranks": ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9"],
+    "statuses": ["Active", "Inactive", "On Leave"],
+    "businessUnits": ["Technology & Innovation", "Growth & Brands", "Corporate Services", "Logistics & Supply", "Market Expansion"],
+    "companies": ["Brigada Corp", "Lumina Global", "EdTech Solutions"],
+    "contractTypes": ["Permanent", "Full-time", "Contract", "Temporary", "Consultant"],
+    "employmentStatuses": ["Regular", "Probation", "Contract", "Intern"],
+    "firstNames": ["Alice", "Bob", "Charlie", "Diana", "Edward", "Frank", "Gloria", "Howard", "Ivy", "Jack"],
+    "lastNames": ["Johnson", "Smith", "Davis", "Evans", "Martinez", "Reynolds", "Borger", "Stark", "League", "Sparrow"]
+  },
+  "learningPaths": [
+    {
+      "id": "1",
+      "title": "Frontend Mastery",
+      "description": "A comprehensive roadmap for mastering modern frontend development, from React patterns to advanced UI/UX principles.",
+      "moduleCount": 12,
+      "enrolledCount": 450,
+      "duration": "24h 30m",
+      "status": "Active",
+      "targetAudience": "Engineering",
+      "modules": ["1", "2"]
+    },
+    {
+      "id": "2",
+      "title": "Backend Engineering",
+      "description": "Deep dive into scalable backend architectures using Node.js, Microservices, and PostgreSQL optimization.",
+      "moduleCount": 8,
+      "enrolledCount": 320,
+      "duration": "18h 45m",
+      "status": "Active",
+      "targetAudience": "Engineering",
+      "modules": ["3", "4"]
+    },
+    {
+      "id": "3",
+      "title": "Leadership Roadmap",
+      "description": "Essential skills for new and senior managers, focusing on team dynamics, strategy, and conflict resolution.",
+      "moduleCount": 10,
+      "enrolledCount": 210,
+      "duration": "15h 20m",
+      "status": "Draft",
+      "targetAudience": "Management",
+      "modules": []
+    }
+  ],
+  "announcements": [
+    {
+      "id": "1",
+      "title": "New Compliance Module Available",
+      "category": "Update",
+      "content": "All employees are required to complete the '2026 Workplace Diversity' module by the end of this month. Direct links are available in your dashboard.",
+      "audience": "All Employees",
+      "date": "Feb 8, 2026",
+      "pinned": true,
+      "priority": "High",
+      "status": "Published",
+      "author": "HR Department",
+      "reads": 1240
+    },
+    {
+      "id": "2",
+      "title": "Q1 Training Deadline Reminder",
+      "category": "Alert",
+      "content": "A gentle reminder that the Q1 training cycle ends on March 31st. Please ensure all mandatory certifications are finalized before then.",
+      "audience": "All Employees",
+      "date": "Feb 5, 2026",
+      "pinned": true,
+      "priority": "Medium",
+      "status": "Published",
+      "author": "Brigada Admin",
+      "reads": 850
+    },
+    {
+      "id": "3",
+      "title": "System Maintenance - Feb 15",
+      "category": "Maintenance",
+      "content": "The Brigada Learning System will be down for scheduled maintenance from 2:00 AM to 4:00 AM UTC on February 15th. We apologize for any inconvenience.",
+      "audience": "All Employees",
+      "date": "Feb 3, 2026",
+      "pinned": false,
+      "priority": "High",
+      "status": "Published",
+      "author": "IT Ops",
+      "reads": 420
+    },
+    {
+      "id": "4",
+      "title": "New Leadership Path Launched",
+      "category": "Event",
+      "content": "We've launched a new series focused on 'Strategic Decision Making' for current and aspiring managers. Enroll today through the Learning Paths page.",
+      "audience": "Managers",
+      "date": "Jan 28, 2026",
+      "pinned": false,
+      "priority": "Low",
+      "status": "Published",
+      "author": "L&D Team",
+      "reads": 310
+    }
+  ],
+  "certificates": [
+    {
+      "id": "1",
+      "name": "React Proficiency",
+      "issued": 124,
+      "template": "Modern Blue",
+      "businessUnit": "Engineering",
+      "moduleType": "Technical",
+      "signatoryName": "Sarah Drasner",
+      "signatoryTitle": "VP of Engineering",
+      "primaryColor": "#2563eb",
+      "lastIssued": "Feb 5, 2026"
+    },
+    {
+      "id": "2",
+      "name": "Onboarding Completion",
+      "issued": 1240,
+      "template": "Corporate Gold",
+      "businessUnit": "All Units",
+      "moduleType": "Compliance",
+      "signatoryName": "Robert Fox",
+      "signatoryTitle": "Chief People Officer",
+      "primaryColor": "#d97706",
+      "lastIssued": "Feb 8, 2026"
+    },
+    {
+      "id": "3",
+      "name": "Leadership Certified",
+      "issued": 42,
+      "template": "Executive Dark",
+      "businessUnit": "Management",
+      "moduleType": "Leadership",
+      "signatoryName": "Alex Morgan",
+      "signatoryTitle": "CEO",
+      "primaryColor": "#1e293b",
+      "lastIssued": "Jan 30, 2026"
+    },
+    {
+      "id": "4",
+      "name": "Security Compliance",
+      "issued": 890,
+      "template": "Standard",
+      "businessUnit": "All Units",
+      "moduleType": "Compliance",
+      "signatoryName": "Esther Howard",
+      "signatoryTitle": "Head of Security",
+      "primaryColor": "#475569",
+      "lastIssued": "Feb 7, 2026"
+    },
+    {
+      "id": "5",
+      "name": "Sales Mastery",
+      "issued": 67,
+      "template": "Modern Blue",
+      "businessUnit": "Sales",
+      "moduleType": "Sales",
+      "signatoryName": "Jane Cooper",
+      "signatoryTitle": "VP of Sales",
+      "primaryColor": "#2563eb",
+      "lastIssued": "Feb 1, 2026"
+    }
+  ],
+  "restrictedProfiles": [
+    {
+      "id": "1",
+      "name": "Alice Johnson",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "module": "Advanced React Patterns",
+      "attempts": 4,
+      "lastScore": 62,
+      "status": "Restricted",
+      "date": "Feb 9, 2026"
+    },
+    {
+      "id": "2",
+      "name": "Bob Smith",
+      "avatar": "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "module": "Node.js Microservices",
+      "attempts": 3,
+      "lastScore": 58,
+      "status": "Probation",
+      "date": "Feb 7, 2026"
+    },
+    {
+      "id": "3",
+      "name": "Diana Evans",
+      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "module": "PostgreSQL Mastery 102",
+      "attempts": 5,
+      "lastScore": 45,
+      "status": "Restricted",
+      "date": "Feb 5, 2026"
+    },
+    {
+      "id": "4",
+      "name": "Jack Sparrow",
+      "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "module": "UI/UX Principles for Devs",
+      "attempts": 3,
+      "lastScore": 68,
+      "status": "Probation",
+      "date": "Feb 2, 2026"
+    }
+  ],
+  "calendarEvents": [
+    {
+      "id": "1",
+      "title": "React Advanced Workshop",
+      "date": "Feb 10, 2026",
+      "time": "10:00 AM - 12:00 PM",
+      "location": "Virtual",
+      "attendees": 45,
+      "color": "bg-slate-900",
+      "day": 10
+    },
+    {
+      "id": "2",
+      "title": "Q1 Compliance Deadline",
+      "date": "Feb 14, 2026",
+      "time": "All Day",
+      "location": "-",
+      "attendees": 2100,
+      "color": "bg-red-500",
+      "day": 14
+    },
+    {
+      "id": "3",
+      "title": "Leadership Cohort Kickoff",
+      "date": "Feb 17, 2026",
+      "time": "2:00 PM - 3:30 PM",
+      "location": "Room 4B",
+      "attendees": 20,
+      "color": "bg-blue-500",
+      "day": 17
+    },
+    {
+      "id": "4",
+      "title": "New Hire Orientation",
+      "date": "Feb 20, 2026",
+      "time": "9:00 AM - 5:00 PM",
+      "location": "Main Hall",
+      "attendees": 30,
+      "color": "bg-green-500",
+      "day": 20
+    },
+    {
+      "id": "5",
+      "title": "Sales Training - Module 3",
+      "date": "Feb 24, 2026",
+      "time": "1:00 PM - 2:30 PM",
+      "location": "Virtual",
+      "attendees": 65,
+      "color": "bg-purple-500",
+      "day": 24
+    }
+  ],
+  "dashboardData": {
+    "stats": {
+      "totalEmployees": "12.4k",
+      "activeModules": "342",
+      "avgQuizScore": "84%",
+      "learningHours": "1920h",
+      "currentMonthHours": "2400"
+    },
+    "areaChart": [
+      { "name": "SEP", "hours": 1200, "active": 400 },
+      { "name": "OCT", "hours": 1450, "active": 600 },
+      { "name": "NOV", "hours": 1300, "active": 550 },
+      { "name": "DEC", "hours": 1800, "active": 800 },
+      { "name": "JAN", "hours": 1600, "active": 700 },
+      { "name": "FEB", "hours": 2100, "active": 950 },
+      { "name": "MAR", "hours": 2400, "active": 1100 },
+      { "name": "APR", "hours": 2250, "active": 1000 }
+    ],
+    "barChart": [
+      { "name": "Mon", "activity": 40, "trend": 35 },
+      { "name": "Tue", "activity": 60, "trend": 50 },
+      { "name": "Wed", "activity": 80, "trend": 65 },
+      { "name": "Thu", "activity": 50, "trend": 55 },
+      { "name": "Fri", "activity": 90, "trend": 75 },
+      { "name": "Sat", "activity": 30, "trend": 50 },
+      { "name": "Sun", "activity": 70, "trend": 60 }
+    ],
+    "radarChart": [
+      { "subject": "Technical", "A": 120, "fullMark": 150 },
+      { "subject": "Soft Skills", "A": 98, "fullMark": 150 },
+      { "subject": "Leadership", "A": 86, "fullMark": 150 },
+      { "subject": "Compliance", "A": 140, "fullMark": 150 },
+      { "subject": "Product", "A": 85, "fullMark": 150 },
+      { "subject": "Sales", "A": 65, "fullMark": 150 }
+    ],
+    "pieChart": [
+      { "name": "Video Lectures", "value": 45 },
+      { "name": "Interactive Labs", "value": 25 },
+      { "name": "Quizzes", "value": 20 },
+      { "name": "Reading Material", "value": 10 }
+    ]
+  },
+  "reportsData": {
+    "activityTrend": [
+      { "name": "Mon", "active": 2400, "completions": 120 },
+      { "name": "Tue", "active": 1398, "completions": 98 },
+      { "name": "Wed", "active": 9800, "completions": 350 },
+      { "name": "Thu", "active": 3908, "completions": 200 },
+      { "name": "Fri", "active": 4800, "completions": 240 },
+      { "name": "Sat", "active": 3800, "completions": 150 },
+      { "name": "Sun", "active": 4300, "completions": 180 }
+    ],
+    "completionRates": [
+      { "name": "React", "completion": 85 },
+      { "name": "Node", "completion": 65 },
+      { "name": "Design", "completion": 90 },
+      { "name": "SQL", "completion": 45 },
+      { "name": "DevOps", "completion": 30 }
+    ],
+    "certifiedCompletions": [
+      { 
+        "id": "101", 
+        "employee": { "name": "Alice Johnson", "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", "dept": "Engineering" },
+        "module": "Advanced React Patterns",
+        "completedDate": "Oct 24, 2023",
+        "score": 92,
+        "certificateId": "CERT-8832"
+      },
+      { 
+        "id": "102", 
+        "employee": { "name": "Bob Smith", "avatar": "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", "dept": "Marketing" },
+        "module": "Digital Marketing 101",
+        "completedDate": "Oct 22, 2023",
+        "score": 88,
+        "certificateId": "CERT-8833"
+      },
+      { 
+        "id": "103", 
+        "employee": { "name": "Charlie Davis", "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", "dept": "Design" },
+        "module": "UI/UX Principles",
+        "completedDate": "Oct 20, 2023",
+        "score": 95,
+        "certificateId": "CERT-8834"
+      },
+      { 
+        "id": "104", 
+        "employee": { "name": "Diana Evans", "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80", "dept": "Engineering" },
+        "module": "PostgreSQL Mastery 101",
+        "completedDate": "Oct 18, 2023",
+        "score": 85,
+        "certificateId": "CERT-8835"
+      }
+    ]
+  },
+  "trainingSchedule": [
+    {
+      "id": "1",
+      "day": "08",
+      "month": "Oct",
+      "title": "System Update",
+      "subtitle": "Mandatory Security Training",
+      "time": "09:00 AM",
+      "type": "dark"
+    },
+    {
+      "id": "2",
+      "day": "12",
+      "month": "Oct",
+      "title": "Leadership Workshop",
+      "subtitle": "For Senior Managers",
+      "time": "02:00 PM",
+      "type": "light"
+    }
+  ],
+  "evaluations": [
+    { "id": "1", "studentName": "John Doe", "moduleTitle": "React Basics", "assignmentTitle": "Component Lifecycle", "submissionDate": "2023-10-25", "status": "Pending" },
+    { "id": "2", "studentName": "Jane Smith", "moduleTitle": "Node.js", "assignmentTitle": "API Endpoint", "submissionDate": "2023-10-24", "status": "Graded", "score": 95 },
+    { "id": "3", "studentName": "Mike Ross", "moduleTitle": "UI Design", "assignmentTitle": "Wireframing", "submissionDate": "2023-10-23", "status": "Pending" }
+  ],
+  "detailedSubmissions": {
+    "1": {
+      "mcq": { "correct": 2, "total": 2 },
+      "mcqDetails": [
+        {
+          "question": "What is the return value of useMemo?",
+          "selectedOption": "A memoized value",
+          "correctOption": "A memoized value",
+          "isCorrect": true
+        },
+        {
+          "question": "Which hook is used for side effects?",
+          "selectedOption": "useEffect",
+          "correctOption": "useEffect",
+          "isCorrect": true
+        }
+      ],
+      "narrative": [
+        {
+          "question": "Explain the difference between useEffect and useLayoutEffect.",
+          "answer": "useEffect runs asynchronously after the render is committed to the screen. useLayoutEffect runs synchronously immediately after DOM mutations but before the browser paints. You generally use useEffect unless you need to measure DOM layout."
+        },
+        {
+          "question": "Why is the key prop important in lists?",
+          "answer": "Keys help React identify which items have changed, are added, or are removed. It gives elements a stable identity."
+        }
+      ]
+    },
+    "3": {
+      "mcq": { "correct": 1, "total": 2 },
+      "mcqDetails": [
+         {
+          "question": "What is the first step in the design process?",
+          "selectedOption": "Empathize",
+          "correctOption": "Empathize",
+          "isCorrect": true
+        },
+        {
+          "question": "Which tool is best for vector graphics?",
+          "selectedOption": "Photoshop",
+          "correctOption": "Illustrator",
+          "isCorrect": false
+        }
+      ],
+      "narrative": [
+        {
+          "question": "Describe the primary goal of wireframing in the UX process.",
+          "answer": "Wireframing focuses on structure and layout without design elements like colors or images. It allows stakeholders to focus on UX."
+        }
+      ]
+    }
+  },
+  "roles": [
+    { "id": "1", "name": "Super Admin", "members": 2, "permissions": "Full Access", "created": "Jan 1, 2024" },
+    { "id": "2", "name": "Instructor", "members": 15, "permissions": "Create & Grade Modules", "created": "Jan 1, 2024" },
+    { "id": "3", "name": "Employee", "members": 183, "permissions": "View & Complete Modules", "created": "Jan 1, 2024" }
+  ],
+  "contacts": [
+    { "id": 1, "name": "Sarah Drasner", "lastMsg": "Can we schedule a call?", "time": "2m ago", "unread": 2, "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" },
+    { "id": 2, "name": "Ryan Dahl", "lastMsg": "The module update is ready.", "time": "1h ago", "unread": 0, "avatar": "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" },
+    { "id": 3, "name": "Alice Johnson", "lastMsg": "I have a question about the assignment.", "time": "3h ago", "unread": 0, "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" }
+  ],
+  "settingsSections": [
+    { "id": "general", "title": "General", "description": "Organization name, timezone, and language preferences", "options": [
+      { "name": "Organization Name", "desc": "Brigada Learning System" },
+      { "name": "Timezone", "desc": "Coordinated Universal Time (UTC)" },
+      { "name": "Language", "desc": "English (US)" }
+    ]},
+    { "id": "notifications", "title": "Notifications", "description": "Email alerts, in-app notifications, and digest settings", "options": [
+      { "name": "Email Notifications", "desc": "Enabled" },
+      { "name": "Push Notifications", "desc": "Disabled" },
+      { "name": "Weekly Digest", "desc": "Enabled" }
+    ]},
+    { "id": "appearance", "title": "Appearance", "description": "Branding, logo, colors, and theme customization", "options": [
+      { "name": "System Theme", "desc": "Light" },
+      { "name": "Primary Color", "desc": "#0f172a" },
+      { "name": "Logo Alignment", "desc": "Left" }
+    ]},
+    { "id": "security", "title": "Security", "description": "Password policies, two-factor authentication, and session settings", "options": [
+      { "name": "Two-Factor Auth", "desc": "Enforced" },
+      { "name": "Password Expiry", "desc": "90 Days" },
+      { "name": "Idle Timeout", "desc": "30 Minutes" }
+    ]},
+    { "id": "data", "title": "Data & Storage", "description": "Backup schedule, storage usage, and data retention policies", "options": [
+      { "name": "Backup Interval", "desc": "Daily" },
+      { "name": "Storage Limit", "desc": "100 GB" },
+      { "name": "Retention Policy", "desc": "7 Years" }
+    ]}
+  ],
+  "employees": [
+    {
+      "id": "admin-1",
+      "first_name": "Alex",
+      "last_name": "Morgan",
+      "name": "Alex Morgan",
+      "email": "alex.morgan@company.com",
+      "password": "password123",
+      "department": "Administration",
+      "business_unit": "Corporate Services",
+      "role": "Admin",
+      "admin_role": "Super Admin",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2021-01-01T08:00:00Z",
+      "last_active": "2026-02-11T20:00:00Z",
+      "employment_status": "Regular",
+      "transfer_status": "None",
+      "contract_type": "Permanent",
+      "band_id": "L10",
+      "position": "Principal Administrator"
+    },
+    {
+      "id": "1",
+      "first_name": "Alice",
+      "last_name": "Johnson",
+      "name": "Alice Johnson",
+      "email": "alice.johnson@company.com",
+      "password": "password123",
+      "department": "Engineering",
+      "business_unit": "Technology & Innovation",
+      "role": "Employee",
+      "admin_role": "Super Admin",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2022-01-12T08:00:00Z",
+      "last_active": "2026-02-11T20:00:00Z",
+      "employment_status": "Regular",
+      "transfer_status": "None",
+      "contract_type": "Permanent",
+      "band_id": "L7",
+      "position": "VP Engineering"
+    },
+    {
+      "id": "2",
+      "first_name": "Bob",
+      "last_name": "Smith",
+      "name": "Bob Smith",
+      "email": "bob.smith@company.com",
+      "password": "password123",
+      "department": "Engineering",
+      "business_unit": "Technology & Innovation",
+      "role": "Employee",
+      "admin_role": "Instructor",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2023-03-05T09:00:00Z",
+      "last_active": "2026-02-11T18:30:00Z",
+      "employment_status": "Regular",
+      "transfer_status": "None",
+      "contract_type": "Permanent",
+      "band_id": "L5",
+      "position": "Senior Developer"
+    },
+    {
+      "id": "3",
+      "first_name": "Charlie",
+      "last_name": "Davis",
+      "name": "Charlie Davis",
+      "email": "charlie.davis@company.com",
+      "password": "password123",
+      "department": "Marketing",
+      "business_unit": "Growth & Brands",
+      "role": "Employee",
+      "admin_role": "None",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2021-06-20T10:00:00Z",
+      "last_active": "2026-02-11T21:40:00Z",
+      "employment_status": "Regular",
+      "transfer_status": "None",
+      "contract_type": "Permanent",
+      "band_id": "L3",
+      "position": "Content Strategist"
+    },
+    {
+      "id": "4",
+      "first_name": "Diana",
+      "last_name": "Evans",
+      "name": "Diana Evans",
+      "email": "diana.evans@company.com",
+      "password": "password123",
+      "department": "Sales",
+      "business_unit": "Growth & Brands",
+      "role": "Employee",
+      "admin_role": "None",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2022-02-14T11:00:00Z",
+      "last_active": "2026-02-08T15:00:00Z",
+      "employment_status": "Regular",
+      "transfer_status": "Pending",
+      "contract_type": "Permanent",
+      "band_id": "L4",
+      "position": "Account Manager"
+    },
+    {
+      "id": "5",
+      "first_name": "Edward",
+      "last_name": "Martinez",
+      "name": "Edward Martinez",
+      "email": "edward.martinez@company.com",
+      "password": "password123",
+      "department": "Operations",
+      "business_unit": "Corporate Services",
+      "role": "Employee",
+      "admin_role": "Instructor",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2022-09-22T08:30:00Z",
+      "last_active": "2026-02-11T17:00:00Z",
+      "employment_status": "Regular",
+      "transfer_status": "None",
+      "contract_type": "Permanent",
+      "band_id": "L6",
+      "position": "Product Manager"
+    },
+    {
+      "id": "6",
+      "first_name": "Frank",
+      "last_name": "Reynolds",
+      "name": "Frank Reynolds",
+      "email": "frank.reynolds@company.com",
+      "password": "password123",
+      "department": "Legal",
+      "business_unit": "Corporate Services",
+      "role": "Employee",
+      "admin_role": "None",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2023-01-10T14:45:00Z",
+      "last_active": "2026-02-10T09:15:00Z",
+      "employment_status": "Regular",
+      "transfer_status": "None",
+      "contract_type": "Permanent",
+      "band_id": "L8",
+      "position": "Chief Legal Officer"
+    },
+    {
+      "id": "7",
+      "first_name": "Gloria",
+      "last_name": "Borger",
+      "name": "Gloria Borger",
+      "email": "gloria.borger@company.com",
+      "password": "password123",
+      "department": "Marketing",
+      "business_unit": "Growth & Brands",
+      "role": "Employee",
+      "admin_role": "None",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2024-05-12T11:20:00Z",
+      "last_active": "2026-02-11T12:00:00Z",
+      "employment_status": "Probation",
+      "transfer_status": "None",
+      "contract_type": "Full-time",
+      "band_id": "L2",
+      "position": "Junior Researcher"
+    },
+    {
+      "id": "8",
+      "first_name": "Howard",
+      "last_name": "Stark",
+      "name": "Howard Stark",
+      "email": "howard.stark@company.com",
+      "password": "password123",
+      "department": "Engineering",
+      "business_unit": "Technology & Innovation",
+      "role": "Employee",
+      "admin_role": "Admin",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2020-01-01T09:00:00Z",
+      "last_active": "2026-02-11T10:00:00Z",
+      "employment_status": "Regular",
+      "transfer_status": "None",
+      "contract_type": "Permanent",
+      "band_id": "L9",
+      "position": "Founder & Advisor"
+    },
+    {
+      "id": "9",
+      "first_name": "Ivy",
+      "last_name": "League",
+      "name": "Ivy League",
+      "email": "ivy.league@company.com",
+      "password": "password123",
+      "department": "HR",
+      "business_unit": "Corporate Services",
+      "role": "Employee",
+      "admin_role": "None",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2023-11-20T08:00:00Z",
+      "last_active": "2026-02-11T15:30:00Z",
+      "employment_status": "Regular",
+      "transfer_status": "None",
+      "contract_type": "Permanent",
+      "band_id": "L4",
+      "position": "HR Business Partner"
+    },
+    {
+      "id": "10",
+      "first_name": "Jack",
+      "last_name": "Sparrow",
+      "name": "Jack Sparrow",
+      "email": "jack.sparrow@company.com",
+      "password": "password123",
+      "department": "Operations",
+      "business_unit": "Logistics & Supply",
+      "role": "Employee",
+      "admin_role": "None",
+      "employee_status": "Active",
+      "image_url": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      "created_at": "2024-02-01T12:00:00Z",
+      "last_active": "2026-02-11T20:45:00Z",
+      "employment_status": "Contract",
+      "transfer_status": "None",
+      "contract_type": "Temporary",
+      "band_id": "L3",
+      "position": "Fleet Operations Lead"
+    }
+  ],
+  "enrollments": [
+    {
+      "id": "enr-1",
+      "employeeId": "3",
+      "moduleId": "1",
+      "enrolledDate": "Jan 15, 2026",
+      "status": "in_progress",
+      "progress": 65,
+      "lastAccessedDate": "Feb 10, 2026",
+      "currentSectionId": "sec-2",
+      "currentComponentId": "comp-3"
+    },
+    {
+      "id": "enr-2",
+      "employeeId": "3",
+      "moduleId": "3",
+      "enrolledDate": "Jan 20, 2026",
+      "status": "completed",
+      "progress": 100,
+      "lastAccessedDate": "Feb 5, 2026",
+      "completedDate": "Feb 5, 2026"
+    },
+    {
+      "id": "enr-3",
+      "employeeId": "3",
+      "moduleId": "2",
+      "enrolledDate": "Feb 1, 2026",
+      "status": "not_started",
+      "progress": 0,
+      "lastAccessedDate": "Feb 1, 2026"
+    },
+    {
+      "id": "enr-4",
+      "employeeId": "4",
+      "moduleId": "1",
+      "enrolledDate": "Jan 10, 2026",
+      "status": "in_progress",
+      "progress": 30,
+      "lastAccessedDate": "Feb 8, 2026",
+      "currentSectionId": "sec-1",
+      "currentComponentId": "comp-2"
+    },
+    {
+      "id": "enr-5",
+      "employeeId": "1",
+      "moduleId": "3",
+      "enrolledDate": "Dec 1, 2025",
+      "status": "completed",
+      "progress": 100,
+      "lastAccessedDate": "Jan 15, 2026",
+      "completedDate": "Jan 15, 2026"
+    },
+    {
+      "id": "enr-6",
+      "employeeId": "2",
+      "moduleId": "1",
+      "enrolledDate": "Nov 15, 2025",
+      "status": "completed",
+      "progress": 100,
+      "lastAccessedDate": "Dec 20, 2025",
+      "completedDate": "Dec 20, 2025"
+    },
+    {
+      "id": "enr-7",
+      "employeeId": "2",
+      "moduleId": "2",
+      "enrolledDate": "Jan 25, 2026",
+      "status": "in_progress",
+      "progress": 45,
+      "lastAccessedDate": "Feb 11, 2026",
+      "currentSectionId": "sec-1",
+      "currentComponentId": "comp-5"
+    },
+    {
+      "id": "enr-8",
+      "employeeId": "5",
+      "moduleId": "1",
+      "enrolledDate": "Feb 5, 2026",
+      "status": "in_progress",
+      "progress": 15,
+      "lastAccessedDate": "Feb 11, 2026",
+      "currentSectionId": "sec-1",
+      "currentComponentId": "comp-1"
+    },
+    {
+      "id": "enr-9",
+      "employeeId": "6",
+      "moduleId": "3",
+      "enrolledDate": "Jan 30, 2026",
+      "status": "in_progress",
+      "progress": 75,
+      "lastAccessedDate": "Feb 10, 2026",
+      "currentSectionId": "sec-2",
+      "currentComponentId": "comp-9"
+    }
+  ],
+  "quizAttempts": [
+    {
+      "id": "qa-1",
+      "employeeId": "3",
+      "moduleId": "1",
+      "componentId": "comp-4",
+      "answers": [{ "questionId": "q1", "selectedOptionId": "o1", "isCorrect": true }],
+      "score": 100,
+      "attemptNumber": 1,
+      "submittedDate": "Feb 5, 2026",
+      "passed": true
+    },
+    {
+      "id": "qa-2",
+      "employeeId": "1",
+      "moduleId": "1",
+      "componentId": "comp-4",
+      "answers": [],
+      "score": 40,
+      "attemptNumber": 1,
+      "submittedDate": "Feb 1, 2026",
+      "passed": false
+    },
+    {
+      "id": "qa-3",
+      "employeeId": "1",
+      "moduleId": "1",
+      "componentId": "comp-4",
+      "answers": [],
+      "score": 50,
+      "attemptNumber": 2,
+      "submittedDate": "Feb 3, 2026",
+      "passed": false
+    },
+    {
+      "id": "qa-4",
+      "employeeId": "1",
+      "moduleId": "1",
+      "componentId": "comp-4",
+      "answers": [],
+      "score": 62,
+      "attemptNumber": 3,
+      "submittedDate": "Feb 9, 2026",
+      "passed": false
+    },
+    {
+      "id": "qa-5",
+      "employeeId": "2",
+      "moduleId": "3",
+      "componentId": "comp-10",
+      "answers": [],
+      "score": 45,
+      "attemptNumber": 1,
+      "submittedDate": "Feb 2, 2026",
+      "passed": false
+    },
+    {
+      "id": "qa-6",
+      "employeeId": "2",
+      "moduleId": "3",
+      "componentId": "comp-10",
+      "answers": [],
+      "score": 55,
+      "attemptNumber": 2,
+      "submittedDate": "Feb 5, 2026",
+      "passed": false
+    },
+    {
+      "id": "qa-7",
+      "employeeId": "2",
+      "moduleId": "3",
+      "componentId": "comp-10",
+      "answers": [],
+      "score": 58,
+      "attemptNumber": 3,
+      "submittedDate": "Feb 7, 2026",
+      "passed": false
+    },
+    {
+      "id": "qa-8",
+      "employeeId": "3",
+      "moduleId": "1",
+      "componentId": "comp-4",
+      "answers": [],
+      "score": 95,
+      "attemptNumber": 1,
+      "submittedDate": "Oct 20, 2023",
+      "passed": true
+    }
+  ],
+  "componentProgress": [
+    {
+      "id": "cp-1",
+      "employeeId": "3",
+      "moduleId": "1",
+      "sectionId": "sec-1",
+      "componentId": "comp-1",
+      "status": "completed",
+      "completedDate": "Jan 20, 2026",
+      "timeSpentMinutes": 25
+    },
+    {
+      "id": "cp-2",
+      "employeeId": "3",
+      "moduleId": "1",
+      "sectionId": "sec-1",
+      "componentId": "comp-2",
+      "status": "completed",
+      "completedDate": "Jan 22, 2026",
+      "timeSpentMinutes": 18
+    },
+    {
+      "id": "cp-3",
+      "employeeId": "3",
+      "moduleId": "1",
+      "sectionId": "sec-2",
+      "componentId": "comp-3",
+      "status": "in_progress",
+      "timeSpentMinutes": 10
+    }
+  ],
+  "employeeCertificates": [
+    {
+      "id": "ec-1",
+      "employeeId": "3",
+      "certificateTemplateId": "1",
+      "moduleId": "3",
+      "issuedDate": "Feb 5, 2026",
+      "certificateNumber": "CERT-9042",
+      "score": 95
+    }
+  ],
+  "learningPathEnrollments": [
+    {
+      "id": "lpe-1",
+      "employeeId": "3",
+      "learningPathId": "2",
+      "enrolledDate": "Jan 15, 2026",
+      "progress": 50,
+      "status": "in_progress"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "1",
+      "userId": "admin-1",
+      "title": "New Content Uploaded",
+      "message": "Sarah Drasner just published a new module: 'Advanced React Patterns'",
+      "type": "info",
+      "read": false,
+      "date": "2026-02-23T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "userId": "admin-1",
+      "title": "System Update",
+      "message": "The system will undergo maintenance at 2:00 AM UTC on Feb 15.",
+      "type": "warning",
+      "read": true,
+      "date": "2026-02-22T08:00:00Z"
+    },
+    {
+      "id": "3",
+      "userId": "3",
+      "title": "Module Completed!",
+      "message": "Congratulations! You have completed 'Node.js Microservices'.",
+      "type": "success",
+      "read": false,
+      "date": "2026-02-23T09:00:00Z"
+    },
+    {
+      "id": "4",
+      "userId": "3",
+      "title": "New Assignment",
+      "message": "A new quiz is available in 'Advanced React Patterns'.",
+      "type": "info",
+      "read": false,
+      "date": "2026-02-23T11:00:00Z"
+    }
+  ]
+}
+

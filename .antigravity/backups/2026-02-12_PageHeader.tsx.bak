@@ -1,0 +1,86 @@
+import React from 'react';
+import { LucideIcon } from 'lucide-react';
+
+interface Action {
+  label: string;
+  icon?: LucideIcon;
+  onClick?: () => void;
+  variant?: 'primary' | 'secondary';
+  href?: string;
+}
+
+interface PageHeaderProps {
+  title: string;
+  description: string;
+  icon?: LucideIcon;
+  actions?: Action[];
+  stats?: {
+    label: string;
+    value: string | number;
+  }[];
+}
+
+const PageHeader: React.FC<PageHeaderProps> = ({ 
+  title,
+  description,
+  icon: Icon,
+  actions,
+  stats 
+}) => {
+  return (
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 bg-white p-6 rounded-2xl border border-main-border shadow-sm">
+      <div className="flex items-center gap-4 flex-1">
+        {Icon && (
+          <div className="p-3 bg-brand-primary/10 rounded-2xl shrink-0">
+            <Icon size={28} className="text-brand-primary" />
+          </div>
+        )}
+        <div className="min-w-0">
+          <h1 className="text-2xl font-bold text-main-heading truncate">{title}</h1>
+          <p className="text-base text-slate-500 font-medium mt-1 leading-relaxed">{description}</p>
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 shrink-0">
+        {/* Stats Section */}
+        {stats && stats.length > 0 && (
+          <div className="flex flex-wrap items-center gap-6 pr-6 border-r border-gray-100 hidden lg:flex">
+            {stats.map((stat, idx) => (
+              <div key={idx} className="flex flex-col">
+                <p className="text-xs uppercase tracking-widest font-black text-slate-300 leading-none mb-1.5">{stat.label}</p>
+                <p className="text-xl font-black text-main-heading">{stat.value}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Actions Section */}
+        {actions && actions.length > 0 && (
+          <div className="flex flex-wrap items-center gap-3">
+            {actions.map((action, idx) => {
+              const ActionIcon = action.icon;
+              const isPrimary = action.variant === 'primary' || !action.variant;
+              
+              return (
+                <button
+                  key={idx}
+                  onClick={action.onClick}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all active:scale-95 whitespace-nowrap
+                    ${isPrimary 
+                      ? 'bg-brand-primary text-brand-primary-text hover:bg-brand-hover shadow-lg shadow-brand-primary/20' 
+                      : 'bg-white text-main-text border border-main-border hover:bg-main-bg'
+                    }`}
+                >
+                  {ActionIcon && <ActionIcon size={18} />}
+                  {action.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default PageHeader;

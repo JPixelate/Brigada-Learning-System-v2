@@ -1,0 +1,228 @@
+import React, { useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  PlusCircle,
+  Library,
+  Users,
+  MessageSquare,
+  ClipboardCheck,
+  BarChart3,
+  LogOut,
+  ShieldCheck,
+  Lock,
+  ChevronDown,
+  TrendingUp,
+  RotateCcw,
+  CheckCircle,
+  Calendar,
+  Megaphone,
+  Waypoints,
+  Settings,
+  Award
+} from 'lucide-react';
+
+import { useData } from '../context/DataContext';
+
+interface SidebarProps {
+  isCollapsed: boolean;
+}
+
+const Sidebar = ({ isCollapsed }: SidebarProps) => {
+  const { data } = useData();
+  const db = data;
+  const location = useLocation();
+  const profile = db.currentUser;
+  const branding = db.systemBranding;
+  const navigation = db.navigation;
+
+  const [reportsOpen, setReportsOpen] = useState(
+    location.pathname.startsWith('/reports')
+  );
+
+  // Helper to resolve Icons from Lucide
+  const getIcon = (iconName: string) => {
+    const icons: Record<string, any> = {
+      LayoutDashboard, PlusCircle, Library, Users, MessageSquare, 
+      ClipboardCheck, BarChart3, LogOut, ShieldCheck, Lock, 
+      ChevronDown, TrendingUp, RotateCcw, CheckCircle, 
+      Calendar, Megaphone, Waypoints, Award, Settings
+    };
+    return icons[iconName] || LayoutDashboard;
+  };
+
+  const navGroups = navigation.groups;
+  const reportSubItems = navigation.reports;
+
+  const isReportActive = location.pathname.startsWith('/reports');
+
+  return (
+    <aside className={`hidden md:flex flex-col ${isCollapsed ? 'w-20 px-2' : 'w-72 px-5'} bg-white h-full transition-all duration-300 z-50 py-5 border-r border-slate-100`}>
+      {/* Logo */}
+      <div className={`flex items-center gap-2 mb-5 ${isCollapsed ? 'justify-center' : 'px-2'}`}>
+        <div className={`flex ${isCollapsed ? 'justify-center' : 'items-start flex-col'}`}>
+          {isCollapsed ? (
+            <span className="text-slate-900 font-bold text-xl">{branding.logo[0]}<span className="text-[#fe0000]">.</span></span>
+          ) : (
+            <>
+              <span className="text-slate-900 font-bold text-lg leading-none tracking-tight">{branding.logo}<span className="text-[#fe0000]">.</span></span>
+              <span className="text-slate-400 font-medium text-[10px] tracking-[0.15em] uppercase mt-1">{branding.tagline}</span>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className={`border-b border-slate-100 mb-3 ${isCollapsed ? 'mx-1' : 'mx-2'}`} />
+
+      {/* Navigation */}
+      <nav className={`flex-1 flex flex-col gap-6 overflow-y-auto no-scrollbar scroll-smooth ${isCollapsed ? '' : 'pr-6'}`}>
+        {navGroups.map((group) => (
+          <div key={group.title} className="flex flex-col gap-1.5">
+            {!isCollapsed && (
+              <h3 className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1">
+                {group.title}
+              </h3>
+            )}
+            {group.items.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                title={isCollapsed ? item.name : ''}
+                className={({ isActive }) => {
+                  const isManageActive = item.path === '/modules' && (isActive || location.pathname.startsWith('/edit-module'));
+                  const active = isActive || isManageActive;
+                  return `group flex items-center ${isCollapsed ? 'justify-center px-1' : 'gap-4 px-3'} py-2.5 rounded-xl transition-all duration-200 ${
+                    active
+                      ? 'bg-red-50 text-[#fe0000] font-semibold'
+                      : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50 font-medium'
+                  }`;
+                }}
+              >
+                {(() => {
+                  const Icon = getIcon(item.icon);
+                  return <Icon size={20} className="shrink-0" />;
+                })()}
+                {!isCollapsed && <span className="text-sm tracking-wide whitespace-nowrap">{item.name}</span>}
+              </NavLink>
+            ))}
+          </div>
+        ))}
+
+        {/* Analytics & Reports */}
+        <div className="flex flex-col gap-1.5">
+          {!isCollapsed && (
+            <h3 className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1">
+              Analytics
+            </h3>
+          )}
+          
+          <NavLink
+            to="/evaluation"
+            title={isCollapsed ? 'Evaluation' : ''}
+            className={({ isActive }) =>
+              `group flex items-center ${isCollapsed ? 'justify-center px-1' : 'gap-4 px-3'} py-2.5 rounded-xl transition-all duration-200 ${
+                isActive
+                  ? 'bg-red-50 text-[#fe0000] font-semibold'
+                  : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50 font-medium'
+              }`
+            }
+          >
+            <ClipboardCheck size={20} className="shrink-0" />
+            {!isCollapsed && <span className="text-sm tracking-wide whitespace-nowrap">Evaluation</span>}
+          </NavLink>
+
+          <div>
+            <button
+              onClick={() => !isCollapsed && setReportsOpen(!reportsOpen)}
+              title={isCollapsed ? 'Reports' : ''}
+              className={`w-full group flex items-center ${isCollapsed ? 'justify-center px-1' : 'gap-4 px-3'} py-2.5 rounded-xl transition-all duration-200 ${
+                isReportActive
+                  ? 'bg-red-50 text-[#fe0000] font-semibold'
+                  : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50 font-medium'
+              }`}
+            >
+              <BarChart3 size={20} className="shrink-0" />
+              {!isCollapsed && (
+                <>
+                  <span className="text-sm tracking-wide flex-1 text-left whitespace-nowrap">Reports</span>
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-200 ${reportsOpen ? 'rotate-180' : ''}`}
+                  />
+                </>
+              )}
+            </button>
+            {!isCollapsed && reportsOpen && (
+              <div className="ml-4 mt-1 flex flex-col gap-1 border-l-2 border-slate-100 pl-3">
+                {reportSubItems.map((sub) => (
+                  <NavLink
+                    key={sub.path}
+                    to={sub.path}
+                    className={({ isActive }) =>
+                      `group flex items-center gap-2.5 px-3 py-2 rounded-lg transition-all duration-200 text-sm ${
+                        isActive
+                          ? 'bg-red-50/60 text-[#fe0000] font-semibold'
+                          : 'text-slate-400 hover:text-slate-700 hover:bg-slate-50 font-medium'
+                      }`
+                    }
+                  >
+                      {(() => {
+                        const Icon = getIcon(sub.icon);
+                        return <Icon size={16} className="shrink-0" />;
+                      })()}
+                    <span className="tracking-wide whitespace-nowrap">{sub.name}</span>
+                  </NavLink>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* System */}
+        <div className="flex flex-col gap-1.5">
+          {!isCollapsed && (
+            <h3 className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-1">
+              System
+            </h3>
+          )}
+          <NavLink
+            to="/settings"
+            title={isCollapsed ? 'Settings' : ''}
+            className={({ isActive }) =>
+              `group flex items-center ${isCollapsed ? 'justify-center px-1' : 'gap-4 px-3'} py-2.5 rounded-xl transition-all duration-200 ${
+                isActive
+                  ? 'bg-red-50 text-[#fe0000] font-semibold'
+                  : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50 font-medium'
+              }`
+            }
+          >
+            <Settings size={20} className="shrink-0" />
+            {!isCollapsed && <span className="text-sm tracking-wide whitespace-nowrap">Settings</span>}
+          </NavLink>
+        </div>
+      </nav>
+
+      {/* User Profile */}
+      <div className={`mt-3 pt-3 border-t border-slate-100 ${isCollapsed ? 'px-1' : 'px-2'}`}>
+        <div className={`flex items-center ${isCollapsed ? 'justify-center flex-col gap-2' : 'gap-3'}`}>
+          <img
+            src={profile.avatar}
+            alt="Profile"
+            className="w-10 h-10 rounded-full object-cover shadow-sm border border-slate-200"
+          />
+          {!isCollapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-slate-900 truncate">{profile.name}</p>
+              <p className="text-xs text-slate-500 truncate">{profile.role}</p>
+            </div>
+          )}
+          <button className={`p-2 text-slate-300 hover:text-[#fe0000] transition-colors rounded-lg hover:bg-red-50 ${isCollapsed ? '' : ''}`} title="Logout">
+            <LogOut size={18} />
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+};
+
+export default Sidebar;

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brigada Learning System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                primary: 'var(--brand-primary)',
+                'primary-text': 'var(--brand-primary-text)',
+                hover: 'var(--brand-primary-hover)',
+              },
+              main: {
+                bg: 'var(--bg-main)',
+                surface: 'var(--bg-surface)',
+                text: 'var(--text-main)',
+                heading: 'var(--text-heading)',
+                border: 'var(--border-color)',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --brand-primary: #0f172a;
+        --brand-primary-text: #ffffff;
+        --brand-primary-hover: #000000;
+        --bg-main: #e9eef4;
+        --bg-surface: #ffffff;
+        --text-main: #475569;
+        --text-heading: #0f172a;
+        --border-color: #d1d9e0;
+      }
+
+      .dark {
+        --brand-primary: #f8fafc;
+        --brand-primary-text: #0f172a;
+        --brand-primary-hover: #ffffff;
+        --bg-main: #0a0a0a;
+        --bg-surface: #111827;
+        --text-main: #94a3b8;
+        --text-heading: #f8fafc;
+        --border-color: #1f2937;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+      .fade-in {
+        animation: fadeIn 0.4s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Floating shapes background animation */
+      .floating-shape {
+        animation: floatDrift linear infinite;
+        will-change: transform;
+      }
+      @keyframes floatDrift {
+        0% {
+          transform: rotate(var(--tw-rotate, 0deg)) translateY(0px) translateX(0px);
+        }
+        25% {
+          transform: rotate(var(--tw-rotate, 0deg)) translateY(-12px) translateX(6px);
+        }
+        50% {
+          transform: rotate(var(--tw-rotate, 0deg)) translateY(-4px) translateX(-8px);
+        }
+        75% {
+          transform: rotate(var(--tw-rotate, 0deg)) translateY(-16px) translateX(4px);
+        }
+        100% {
+          transform: rotate(var(--tw-rotate, 0deg)) translateY(0px) translateX(0px);
+        }
+      }
+
+      /* Enhanced Progress Stats Animations */
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+      
+      @keyframes confetti {
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+      }
+      
+      @keyframes scale-in {
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      
+      @keyframes pulse-subtle {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+      }
+      
+      .animate-shimmer {
+        animation: shimmer 2s infinite;
+      }
+      
+      .animate-confetti {
+        animation: confetti linear forwards;
+      }
+      
+      .animate-scale-in {
+        animation: scale-in 0.2s ease-out;
+      }
+      
+      .animate-pulse-subtle {
+        animation: pulse-subtle 2s infinite;
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .animate-spin-slow {
+        animation: rotate 3s linear infinite;
+      }
+
+      /* Login left panel animations */
+      @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+      .animate-gradient-shift {
+        background-size: 200% 200%;
+        animation: gradientShift 8s ease infinite;
+      }
+
+      @keyframes glowPulse {
+        0%, 100% { opacity: 0.4; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.05); }
+      }
+      .animate-glow-pulse {
+        animation: glowPulse 4s ease-in-out infinite;
+      }
+
+      @keyframes floatUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+      .animate-float-up {
+        animation: floatUp 0.6s ease-out forwards;
+        opacity: 0;
+      }
+
+      @keyframes orbFloat {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(30px, -20px) scale(1.05); }
+        66% { transform: translate(-20px, 15px) scale(0.95); }
+      }
+      .animate-orb-float {
+        animation: orbFloat 12s ease-in-out infinite;
+      }
+
+      @keyframes orbFloat2 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(-25px, 25px) scale(1.08); }
+        66% { transform: translate(20px, -10px) scale(0.92); }
+      }
+      .animate-orb-float-2 {
+        animation: orbFloat2 15s ease-in-out infinite;
+      }
+
+      @keyframes microFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+      }
+      .animate-micro-float {
+        animation: microFloat 4s ease-in-out infinite;
+      }
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+          "react/": "https://esm.sh/react@^19.2.4/",
+          "react": "https://esm.sh/react@^19.2.4",
+          "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+          "recharts": "https://esm.sh/recharts@^3.7.0",
+          "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0",
+          "@google/genai": "https://esm.sh/@google/genai@^1.40.0"
+        }
+      }
+    </script>
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

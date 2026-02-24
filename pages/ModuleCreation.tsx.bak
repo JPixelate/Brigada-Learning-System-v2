@@ -1,0 +1,786 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { 
+  Sparkles, Save, Plus, Trash2, GripVertical, 
+  BookOpen, Video, Mic, Cast, FileText, CheckSquare, 
+  LayoutList, ChevronDown, ChevronRight, X,
+  Calendar, Users, Lock, Search
+} from 'lucide-react';
+import { 
+  DndContext, 
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+import { generateModuleContent } from '../services/geminiService';
+import { DBStructure, Module, Section, ModuleComponent, Question } from '../types';
+import { useData } from '../context/DataContext';
+
+type ComponentType = ModuleComponent['type'];
+type ComponentCategory = ModuleComponent['category'];
+
+// --- Helper Functions ---
+
+const getTypeIcon = (type: ComponentType) => {
+  switch (type) {
+    case 'reading': return FileText;
+    case 'video': return Video;
+    case 'lecture': return Cast;
+    case 'podcast': return Mic;
+    case 'narrative': return LayoutList;
+    case 'quiz': return CheckSquare;
+    default: return BookOpen;
+  }
+};
+
+const getTypeLabel = (type: ComponentType) => {
+  switch (type) {
+    case 'reading': return 'Reading Material';
+    case 'video': return 'Video Lesson';
+    case 'lecture': return 'Interactive Lecture';
+    case 'podcast': return 'Audio Lesson';
+    case 'narrative': return 'Narrative Writing';
+    case 'quiz': return 'Multiple Choice Set';
+    default: return 'Component';
+  }
+};
+
+// --- Sortable Components ---
+
+const SortableComponent = ({ 
+  comp, 
+  sectionId, 
+  deleteComponent, 
+  updateComponent, 
+  updateQuestion,
+  addOption,
+  deleteOption,
+  addQuestion
+}: any) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: comp.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const Icon = getTypeIcon(comp.type);
+
+  return (
+    <div ref={setNodeRef} style={style} className="bg-slate-50 p-5 rounded-lg border border-slate-200 space-y-4">
+      <div className="flex items-center gap-3">
+        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 hover:bg-white/50 rounded transition-colors">
+          <GripVertical size={16} className="text-slate-300" />
+        </div>
+        <Icon size={18} className="text-slate-500" />
+        <input
+          type="text"
+          value={comp.title}
+          onChange={(e) => updateComponent(sectionId, comp.id, 'title', e.target.value)}
+          className="flex-1 text-sm font-medium text-slate-900 bg-transparent outline-none focus:bg-white px-3 py-1.5 rounded transition-colors"
+        />
+        <span className="text-xs font-semibold text-slate-400 uppercase">{comp.category}</span>
+        <button
+          onClick={() => deleteComponent(sectionId, comp.id)}
+          className="p-2 text-slate-400 hover:text-red-600 transition-colors rounded hover:bg-red-50"
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+
+      {comp.type === 'quiz' ? (
+        <div className="space-y-3 pl-9">
+          {(comp.content as Question[]).map((q, qIdx) => (
+            <div key={q.id} className="bg-white p-4 rounded-lg border border-slate-200 space-y-3">
+              <input
+                type="text"
+                value={q.text}
+                onChange={(e) => updateQuestion(sectionId, comp.id, q.id, 'text', e.target.value)}
+                placeholder={`Question ${qIdx + 1}`}
+                className="w-full text-sm font-medium text-slate-900 bg-transparent outline-none px-2 py-1"
+              />
+              <div className="space-y-2">
+                {q.options.map((opt) => (
+                  <div key={opt.id} className="flex items-center gap-3">
+                    <button
+                      onClick={() => {
+                        const updatedOptions = q.options.map(o => ({
+                          ...o,
+                          isCorrect: o.id === opt.id
+                        }));
+                        updateQuestion(sectionId, comp.id, q.id, 'options', updatedOptions);
+                      }}
+                      className={`w-5 h-5 rounded-full border-2 flex-shrink-0 ${
+                        opt.isCorrect
+                          ? 'border-green-500 bg-green-500'
+                          : 'border-slate-300 hover:border-slate-400'
+                      }`}
+                    />
+                    <input
+                      type="text"
+                      value={opt.text}
+                      onChange={(e) => {
+                        const updatedOptions = q.options.map(o =>
+                          o.id === opt.id ? { ...o, text: e.target.value } : o
+                        );
+                        updateQuestion(sectionId, comp.id, q.id, 'options', updatedOptions);
+                      }}
+                      placeholder="Option text..."
+                      className="flex-1 text-sm text-slate-700 bg-transparent outline-none px-2 py-1"
+                    />
+                    {q.options.length > 3 && (
+                      <button
+                        onClick={() => deleteOption(sectionId, comp.id, q.id, opt.id)}
+                        className="p-1 text-slate-300 hover:text-red-500 transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+                <button
+                  onClick={() => addOption(sectionId, comp.id, q.id)}
+                  className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 hover:text-slate-900 transition-colors uppercase ml-8 mt-2"
+                >
+                  <Plus size={12} />
+                  Add Option
+                </button>
+              </div>
+            </div>
+          ))}
+          <button
+            onClick={() => addQuestion(sectionId, comp.id)}
+            className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
+          >
+            <Plus size={14} />
+            Add Question
+          </button>
+        </div>
+      ) : (
+        <div className="pl-9">
+          <textarea
+            value={comp.content as string}
+            onChange={(e) => updateComponent(sectionId, comp.id, 'content', e.target.value)}
+            placeholder={`Enter ${getTypeLabel(comp.type).toLowerCase()} content...`}
+            className="w-full h-20 text-sm text-slate-700 bg-white border border-slate-200 rounded-lg p-3 outline-none focus:ring-1 focus:ring-slate-900/10 resize-none"
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const SortableSection = ({ 
+  section, 
+  toggleSection, 
+  updateSectionTitle, 
+  deleteSection,
+  addComponent,
+  ...compProps 
+}: any) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: section.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : 0,
+    position: 'relative' as any,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className={`bg-white rounded-xl border border-slate-200 shadow-sm ${isDragging ? 'shadow-xl scale-[1.01] border-slate-300 z-50' : ''} transition-all duration-200`}>
+      {/* Section Header */}
+      <div className="flex items-center gap-3 p-5">
+        <button onClick={() => toggleSection(section.id)} className="text-slate-400 hover:text-slate-900 transition-colors">
+          {section.isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+        </button>
+        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 hover:bg-slate-50 rounded transition-colors">
+          <GripVertical size={16} className="text-slate-300" />
+        </div>
+        <input
+          type="text"
+          value={section.title}
+          onChange={(e) => updateSectionTitle(section.id, e.target.value)}
+          className="flex-1 text-sm font-semibold text-slate-900 bg-transparent outline-none focus:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors"
+        />
+        <button
+          onClick={() => deleteSection(section.id)}
+          className="p-2 text-slate-400 hover:text-red-600 transition-colors rounded-full hover:bg-red-50"
+        >
+          <Trash2 size={16} />
+        </button>
+      </div>
+
+      {section.isExpanded && (
+        <div className="px-5 pb-5 space-y-4 border-t border-slate-100 pt-5">
+          <div className="space-y-4">
+            <SortableContext 
+              items={section.components.map((c: any) => c.id)} 
+              strategy={verticalListSortingStrategy}
+            >
+              {section.components.map((comp: any) => (
+                <SortableComponent 
+                  key={comp.id} 
+                  comp={comp} 
+                  sectionId={section.id} 
+                  {...compProps} 
+                />
+              ))}
+            </SortableContext>
+          </div>
+
+          {/* Add Component Buttons */}
+          <div className="pt-4 space-y-3">
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Add Component</p>
+            <div className="flex flex-wrap gap-2.5">
+              {([
+                { type: 'reading' as ComponentType, category: 'learning' as ComponentCategory },
+                { type: 'video' as ComponentType, category: 'learning' as ComponentCategory },
+                { type: 'lecture' as ComponentType, category: 'learning' as ComponentCategory },
+                { type: 'podcast' as ComponentType, category: 'learning' as ComponentCategory },
+                { type: 'narrative' as ComponentType, category: 'learning' as ComponentCategory },
+                { type: 'quiz' as ComponentType, category: 'assessment' as ComponentCategory },
+              ]).map(({ type, category }) => {
+                const Icon = getTypeIcon(type);
+                return (
+                  <button
+                    key={type}
+                    onClick={() => addComponent(section.id, type, category)}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+                  >
+                    <Icon size={14} />
+                    {getTypeLabel(type)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// --- Main Page Component ---
+
+const ModuleCreation = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { data, addModule, updateModule } = useData();
+  const isEditMode = !!id;
+
+  // Constants from Centralized Types
+  const EXISTING_MODULES = data.modules.map(m => ({ id: m.id, title: m.title }));
+  const DEPARTMENTS = data.commonData.departments;
+  const POSITIONS = data.commonData.positions;
+  const RANKS = data.commonData.ranks;
+  const STATUSES = data.commonData.statuses;
+
+  // Module Details State
+  const [moduleTitle, setModuleTitle] = useState('');
+  const [moduleDescription, setModuleDescription] = useState('');
+  const [moduleDuration, setModuleDuration] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // Settings State
+  const [availability, setAvailability] = useState<'always' | 'range'>('always');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [assignmentType, setAssignmentType] = useState('all');
+  const [selectedAudience, setSelectedAudience] = useState<string[]>([]);
+  const [prerequisites, setPrerequisites] = useState<string[]>([]);
+  const [prereqSearch, setPrereqSearch] = useState('');
+
+  // Curriculum State
+  const [sections, setSections] = useState<Section[]>([
+    { id: 'sec-1', title: 'Section 1: Introduction', components: [], isExpanded: true }
+  ]);
+  const [status, setStatus] = useState<Module['status']>('Draft');
+
+  // DND Sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Load Initial Data
+  useEffect(() => {
+    if (isEditMode) {
+      const moduleData = data.modules.find(m => m.id === id);
+      if (moduleData) {
+        setModuleTitle(moduleData.title);
+        setModuleDescription(moduleData.description);
+        setModuleDuration(moduleData.duration || '');
+        if (moduleData.sections) {
+          setSections(moduleData.sections as Section[]);
+        }
+        if (moduleData.settings) {
+          setAvailability(moduleData.settings.availability as any);
+          setAssignmentType(moduleData.settings.assignmentType);
+          setSelectedAudience(moduleData.settings.selectedAudience);
+          setPrerequisites(moduleData.settings.prerequisites);
+        }
+        if (moduleData.status) {
+          setStatus(moduleData.status);
+        }
+      }
+    }
+  }, [id, isEditMode, data.modules]);
+
+  const handleGenerateDescription = async () => {
+    if (!moduleTitle) return;
+    setIsGenerating(true);
+    const content = await generateModuleContent(moduleTitle, 'description');
+    setModuleDescription(content);
+    setIsGenerating(false);
+  };
+
+  // Drag and Drop Logic
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      const activeId = active.id.toString();
+      const overId = over.id.toString();
+
+      // Case 1: Reordering Sections
+      if (activeId.startsWith('sec-') && overId.startsWith('sec-')) {
+        setSections((prev) => {
+          const oldIndex = prev.findIndex((s) => s.id === activeId);
+          const newIndex = prev.findIndex((s) => s.id === overId);
+          return arrayMove(prev, oldIndex, newIndex);
+        });
+      }
+
+      // Case 2: Reordering Components
+      if (activeId.startsWith('comp-') && overId.startsWith('comp-')) {
+        setSections((prev) => {
+          return prev.map((section) => {
+            const hasActive = section.components.some(c => c.id === activeId);
+            const hasOver = section.components.some(c => c.id === overId);
+
+            if (hasActive && hasOver) {
+              const oldIndex = section.components.findIndex(c => c.id === activeId);
+              const newIndex = section.components.findIndex(c => c.id === overId);
+              return {
+                ...section,
+                components: arrayMove(section.components, oldIndex, newIndex)
+              };
+            }
+            return section;
+          });
+        });
+      }
+    }
+  };
+
+  // Management Logic
+  const addSection = () => {
+    setSections([...sections, {
+      id: `sec-${Date.now()}`,
+      title: 'New Section',
+      components: [],
+      isExpanded: true
+    }]);
+  };
+
+  const updateSectionTitle = (id: string, title: string) => {
+    setSections(sections.map(s => s.id === id ? { ...s, title } : s));
+  };
+
+  const deleteSection = (id: string) => {
+    setSections(sections.filter(s => s.id !== id));
+  };
+
+  const toggleSection = (id: string) => {
+    setSections(sections.map(s => s.id === id ? { ...s, isExpanded: !s.isExpanded } : s));
+  };
+
+  const addComponent = (sectionId: string, type: ComponentType, category: ComponentCategory) => {
+    const compId = `comp-${Date.now()}`;
+    setSections(sections.map(s => {
+      if (s.id === sectionId) {
+        return {
+          ...s,
+          components: [...s.components, {
+            id: compId,
+            type,
+            category,
+            title: `New ${getTypeLabel(type)}`,
+            content: type === 'quiz' ? [] : ''
+          }]
+        };
+      }
+      return s;
+    }));
+  };
+
+  const deleteComponent = (sectionId: string, componentId: string) => {
+    setSections(sections.map(s => {
+      if (s.id === sectionId) {
+        return { ...s, components: s.components.filter(c => c.id !== componentId) };
+      }
+      return s;
+    }));
+  };
+
+  const updateComponent = (sectionId: string, componentId: string, field: string, value: any) => {
+    setSections(sections.map(s => {
+      if (s.id === sectionId) {
+        return {
+          ...s,
+          components: s.components.map(c => c.id === componentId ? { ...c, [field]: value } : c)
+        };
+      }
+      return s;
+    }));
+  };
+
+  const addQuestion = (sectionId: string, componentId: string) => {
+    const newQ: Question = {
+      id: `q-${Date.now()}`,
+      text: '',
+      options: [
+        { id: `opt-${Date.now()}-1`, text: '', isCorrect: false },
+        { id: `opt-${Date.now()}-2`, text: '', isCorrect: false },
+        { id: `opt-${Date.now()}-3`, text: '', isCorrect: false }
+      ]
+    };
+    setSections(sections.map(s => {
+      if (s.id === sectionId) {
+        return {
+          ...s,
+          components: s.components.map(c => 
+            c.id === componentId ? { ...c, content: [...(c.content as Question[]), newQ] } : c
+          )
+        };
+      }
+      return s;
+    }));
+  };
+
+  const updateQuestion = (sectionId: string, componentId: string, qId: string, field: string, value: any) => {
+    setSections(sections.map(s => {
+      if (s.id === sectionId) {
+        return {
+          ...s,
+          components: s.components.map(c => {
+            if (c.id === componentId) {
+              const qs = (c.content as Question[]).map(q => q.id === qId ? { ...q, [field]: value } : q);
+              return { ...c, content: qs };
+            }
+            return c;
+          })
+        };
+      }
+      return s;
+    }));
+  };
+
+  const addOption = (secId: string, compId: string, qId: string) => {
+    setSections(sections.map(s => {
+      if (s.id === secId) {
+        return {
+          ...s,
+          components: s.components.map(c => {
+            if (c.id === compId) {
+              const qs = (c.content as Question[]).map(q => {
+                if (q.id === qId) {
+                  return { ...q, options: [...q.options, { id: `opt-${Date.now()}`, text: '', isCorrect: false }] };
+                }
+                return q;
+              });
+              return { ...c, content: qs };
+            }
+            return c;
+          })
+        };
+      }
+      return s;
+    }));
+  };
+
+  const deleteOption = (secId: string, compId: string, qId: string, optId: string) => {
+    setSections(sections.map(s => {
+      if (s.id === secId) {
+        return {
+          ...s,
+          components: s.components.map(c => {
+            if (c.id === compId) {
+              const qs = (c.content as Question[]).map(q => {
+                if (q.id === qId) {
+                  return { ...q, options: q.options.filter(o => o.id !== optId) };
+                }
+                return q;
+              });
+              return { ...c, content: qs };
+            }
+            return c;
+          })
+        };
+      }
+      return s;
+    }));
+  };
+
+  const toggleAudienceItem = (item: string) => {
+    setSelectedAudience(prev => prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]);
+  };
+
+  const togglePrerequisite = (mid: string) => {
+    setPrerequisites(prev => prev.includes(mid) ? prev.filter(id => id !== mid) : [...prev, mid]);
+  };
+
+  const filteredPrerequisites = EXISTING_MODULES.filter(m => 
+    m.title.toLowerCase().includes(prereqSearch.toLowerCase()) && m.id !== id
+  );
+
+  const handleSave = (newStatus?: Module['status']) => {
+    const finalStatus = newStatus || status;
+    const modulePayload: Module = {
+      id: id || `mod-${Date.now()}`,
+      title: moduleTitle || 'Untitled Module',
+      description: moduleDescription,
+      duration: moduleDuration,
+      instructor: data.currentUser.name,
+      studentsEnrolled: isEditMode ? (data.modules.find(m => m.id === id)?.studentsEnrolled || 0) : 0,
+      status: finalStatus,
+      lastUpdated: 'Just now',
+      thumbnail: isEditMode ? (data.modules.find(m => m.id === id)?.thumbnail || 'https://images.unsplash.com/photo-1633356122544-f134324a6cee') : 'https://images.unsplash.com/photo-1633356122544-f134324a6cee',
+      sections,
+      settings: {
+        availability,
+        assignmentType,
+        selectedAudience,
+        prerequisites
+      }
+    };
+
+    if (isEditMode) {
+      updateModule(id, modulePayload);
+    } else {
+      addModule(modulePayload);
+    }
+    navigate('/modules');
+  };
+
+  const getAudienceList = () => {
+    switch (assignmentType) {
+      case 'department': return DEPARTMENTS;
+      case 'position': return POSITIONS;
+      case 'rank': return RANKS;
+      case 'status': return STATUSES;
+      default: return [];
+    }
+  };
+
+  return (
+    <div className="flex flex-col lg:flex-row gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+      {/* Sidebar Settings */}
+      <div className="w-full lg:w-96 space-y-6">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-6">
+          <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-4">Module Info</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Module Title</label>
+              <input 
+                type="text" 
+                value={moduleTitle}
+                onChange={(e) => setModuleTitle(e.target.value)}
+                placeholder="e.g. Advanced Cybersecurity"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-slate-900/5 focus:border-slate-900 transition-all outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Duration (Hours)</label>
+              <input 
+                type="text" 
+                value={moduleDuration}
+                onChange={(e) => setModuleDuration(e.target.value)}
+                placeholder="e.g. 40 hours"
+                className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-slate-900/5 focus:border-slate-900 transition-all outline-none"
+              />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Description</label>
+                <button 
+                  onClick={handleGenerateDescription}
+                  disabled={!moduleTitle || isGenerating}
+                  className="text-[10px] font-bold text-slate-900 flex items-center gap-1 transition-all bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-full uppercase disabled:opacity-50"
+                >
+                  <Sparkles size={10} className="text-slate-600" />
+                  AI Assist
+                </button>
+              </div>
+              <textarea 
+                value={moduleDescription}
+                onChange={(e) => setModuleDescription(e.target.value)}
+                placeholder="Describe objectives..."
+                className="w-full h-24 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-slate-900/5 focus:border-slate-900 outline-none resize-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
+          <h2 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-4">Settings</h2>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Availability</label>
+              <div className="flex gap-2">
+                {['always', 'range'].map(type => (
+                  <button
+                    key={type}
+                    onClick={() => setAvailability(type as any)}
+                    className={`flex-1 px-3 py-2 rounded-lg text-xs font-semibold border transition-all ${
+                      availability === type ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-50 text-slate-500 border-slate-200'
+                    }`}
+                  >
+                    {type === 'always' ? 'Always' : 'Range'}
+                  </button>
+                ))}
+              </div>
+              {availability === 'range' && (
+                <div className="flex gap-2 mt-2">
+                  <input type="date" value={dateRange.start} onChange={e => setDateRange({...dateRange, start: e.target.value})} className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none" />
+                  <input type="date" value={dateRange.end} onChange={e => setDateRange({...dateRange, end: e.target.value})} className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none" />
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Audience</label>
+              <select value={assignmentType} onChange={e => {setAssignmentType(e.target.value); setSelectedAudience([])}} className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none">
+                <option value="all">Everywhere</option>
+                <option value="department">By Department</option>
+                <option value="position">By Position</option>
+              </select>
+              {assignmentType !== 'all' && (
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {getAudienceList().map(item => (
+                    <button key={item} onClick={() => toggleAudienceItem(item)} className={`px-2.5 py-1 rounded-full text-xs font-medium border ${selectedAudience.includes(item) ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200'}`}>
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Prerequisites</label>
+              <div className="relative mb-2">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input type="text" value={prereqSearch} onChange={e => setPrereqSearch(e.target.value)} placeholder="Search..." className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none" />
+              </div>
+              <div className="max-h-32 overflow-y-auto space-y-1 text-sm scroll-smooth no-scrollbar">
+                {filteredPrerequisites.map(m => (
+                  <button key={m.id} onClick={() => togglePrerequisite(m.id)} className={`w-full text-left px-3 py-1.5 rounded transition-colors ${prerequisites.includes(m.id) ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}>
+                    {m.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Curriculum Canvas */}
+      <div className="flex-1 min-w-0 space-y-6">
+        <div className="flex justify-between items-center bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold text-slate-900">Curriculum Canvas</h2>
+            <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+              status === 'Published' ? 'bg-slate-900 text-white' : 
+              status === 'Draft' ? 'bg-slate-100 text-slate-500' : 
+              'bg-slate-50 text-slate-400 border border-slate-200'
+            }`}>
+              {status}
+            </span>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={addSection} className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-900 border border-slate-200 rounded-lg text-sm font-bold hover:bg-slate-100 transition-all">
+              <Plus size={16} /> Add Section
+            </button>
+            <button 
+              onClick={() => handleSave('Draft')} 
+              className="flex items-center gap-2 px-4 py-2 bg-white text-slate-600 border border-slate-200 rounded-lg text-sm font-bold hover:bg-slate-50 hover:text-slate-900 transition-all"
+            >
+              <FileText size={16} />
+              Save as Draft
+            </button>
+            <button 
+              onClick={() => handleSave('Published')} 
+              className="flex items-center gap-2 px-5 py-2 bg-slate-900 text-white rounded-lg text-sm font-bold hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+            >
+              <Save size={16} /> {isEditMode ? 'Update' : 'Publish'}
+            </button>
+          </div>
+        </div>
+
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <div className="space-y-6">
+            <SortableContext 
+              items={sections.map(s => s.id)} 
+              strategy={verticalListSortingStrategy}
+            >
+              {sections.map(section => (
+                <SortableSection 
+                  key={section.id} 
+                  section={section} 
+                  toggleSection={toggleSection}
+                  updateSectionTitle={updateSectionTitle}
+                  deleteSection={deleteSection}
+                  addComponent={addComponent}
+                  deleteComponent={deleteComponent}
+                  updateComponent={updateComponent}
+                  updateQuestion={updateQuestion}
+                  addOption={addOption}
+                  deleteOption={deleteOption}
+                  addQuestion={addQuestion}
+                />
+              ))}
+            </SortableContext>
+          </div>
+        </DndContext>
+      </div>
+    </div>
+  );
+};
+
+export default ModuleCreation;
