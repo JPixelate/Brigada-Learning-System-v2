@@ -1,0 +1,37 @@
+services:
+
+  # ── Express Backend ──────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bls-backend
+    restart: unless-stopped
+    # Loads all credentials from server/.env
+    env_file:
+      - ./server/.env
+    ports:
+      - "5000:5000"
+    networks:
+      - bls-network
+
+  # ── React Frontend (Nginx) ───────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        # Passes the Gemini API key into the Vite build
+        GEMINI_API_KEY: ${GEMINI_API_KEY}
+    container_name: bls-frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - bls-network
+
+networks:
+  bls-network:
+    driver: bridge

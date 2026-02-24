@@ -5,6 +5,16 @@
 
 ---
 
+## Deployment Options
+
+| Method | Best For | Requires |
+|---|---|---|
+| **Manual (PM2 + Nginx)** | Standard VPS/server setup | Node.js, PM2, Nginx on the server |
+| **Docker** | Isolated, portable containers | Docker & Docker Compose on the server |
+| **CI/CD (GitHub Actions)** | Auto-deploy on every push to `main` | SSH access + GitHub secrets |
+
+---
+
 ## Table of Contents
 
 1. [Pre-Deployment Checklist](#1-pre-deployment-checklist)
@@ -25,9 +35,11 @@
 16. [Step 14 — Enable HTTPS (SSL)](#step-14--enable-https-ssl)
 17. [Step 15 — Verify Everything is Running](#step-15--verify-everything-is-running)
 18. [External Service Accounts Required](#external-service-accounts-required)
-19. [Updating the System (Re-deployment)](#updating-the-system-re-deployment)
-20. [Useful Commands Reference](#useful-commands-reference)
-21. [Troubleshooting](#troubleshooting)
+19. [Docker Deployment](#docker-deployment)
+20. [CI/CD — GitHub Actions Auto-Deploy](#cicd--github-actions-auto-deploy)
+21. [Updating the System (Re-deployment)](#updating-the-system-re-deployment)
+22. [Useful Commands Reference](#useful-commands-reference)
+23. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -653,4 +665,163 @@ If PM2 processes are not saved, run `pm2 save` after starting the backend.
 
 ---
 
-*For application-level documentation, see [README.md](README.md).*
+---
+
+## Docker Deployment
+
+Use Docker if you want the entire system containerized and portable — no need to manually install Node.js, PM2, or Nginx on the server.
+
+### What you need installed on the server
+
+```bash
+# Install Docker
+curl -fsSL https://get.docker.com | sudo bash
+
+# Install Docker Compose plugin
+sudo apt install -y docker-compose-plugin
+
+# Add your user to the docker group (avoids needing sudo)
+sudo usermod -aG docker $USER
+newgrp docker
+
+# Verify
+docker --version
+docker compose version
+```
+
+### Files included in this repo for Docker
+
+| File | Purpose |
+|---|---|
+| `Dockerfile` | Builds the Express backend container |
+| `Dockerfile.frontend` | Multi-stage build: compiles React, then serves with Nginx |
+| `docker-compose.yml` | Orchestrates both containers on a shared network |
+| `nginx.docker.conf` | Nginx config inside the frontend container |
+
+### Run with Docker Compose
+
+```bash
+# 1. Clone the repo (if not done already)
+git clone https://github.com/JPixelate/Brigada-Learning-System-v2.git
+cd Brigada-Learning-System-v2
+
+# 2. Create your environment files
+cp .env.example .env
+cp server/.env.example server/.env
+# → Fill in your real credentials in both files
+
+# 3. Build and start all containers
+GEMINI_API_KEY=your_key_here docker compose up -d --build
+```
+
+Or add `GEMINI_API_KEY` to your root `.env` and run:
+
+```bash
+docker compose up -d --build
+```
+
+### Verify containers are running
+
+```bash
+docker compose ps
+# Both bls-frontend and bls-backend should show "running"
+
+docker compose logs backend    # View backend logs
+docker compose logs frontend   # View Nginx logs
+```
+
+The system will be accessible at `http://your-server-ip`.
+
+### Useful Docker commands
+
+```bash
+docker compose up -d --build      # Rebuild and start (after code changes)
+docker compose down               # Stop and remove containers
+docker compose restart backend    # Restart only the backend
+docker compose logs -f backend    # Follow backend logs live
+docker compose exec backend sh    # Shell into the backend container
+```
+
+### HTTPS with Docker
+
+For production HTTPS with Docker, use a reverse proxy like **Nginx Proxy Manager** or **Traefik** in front of the containers, or keep the host Nginx + Certbot setup and proxy to the Docker containers:
+
+```nginx
+location / {
+    proxy_pass http://localhost:80;   # Docker frontend container
+}
+```
+
+---
+
+## CI/CD — GitHub Actions Auto-Deploy
+
+Every push to `main` automatically builds the frontend and deploys to your server.
+
+### How it works
+
+```
+Push to main
+     │
+     ▼
+GitHub Actions Runner
+  1. Installs Node.js dependencies
+  2. Runs npm run build (uses GEMINI_API_KEY secret)
+  3. Copies dist/ to server via SCP
+  4. SSHes into server → git pull → npm install → pm2 restart
+     │
+     ▼
+Server is updated ✅
+```
+
+### Required GitHub Secrets
+
+Go to your repository → **Settings → Secrets and variables → Actions → New repository secret**
+
+Add these four secrets:
+
+| Secret Name | Value | Where to get it |
+|---|---|---|
+| `GEMINI_API_KEY` | Your Gemini API key | Google AI Studio |
+| `SERVER_HOST` | Your server's IP or domain | Your hosting provider |
+| `SERVER_USER` | SSH username on the server | e.g., `ubuntu`, `root` |
+| `SERVER_SSH_KEY` | Your **private** SSH key contents | See below |
+
+### Generating an SSH Key for CI/CD
+
+Run this on your local machine (not the server):
+
+```bash
+# Generate a dedicated deploy key (no passphrase)
+ssh-keygen -t ed25519 -C "github-actions-deploy" -f ~/.ssh/bls_deploy_key -N ""
+
+# Copy the public key to your server
+ssh-copy-id -i ~/.ssh/bls_deploy_key.pub your_user@your_server_ip
+```
+
+Then copy the **private key** contents into the `SERVER_SSH_KEY` secret:
+
+```bash
+cat ~/.ssh/bls_deploy_key    # Copy this entire output into the GitHub secret
+```
+
+### Workflow file location
+
+The workflow is already included in this repo at:
+
+```
+.github/workflows/deploy.yml
+```
+
+### Manual trigger
+
+You can also trigger a deployment manually without pushing code:
+
+1. Go to your GitHub repository
+2. Click the **Actions** tab
+3. Select **CI/CD — Build & Deploy**
+4. Click **Run workflow** → **Run workflow**
+
+---
+
+## Updating the System (Re-deployment)
